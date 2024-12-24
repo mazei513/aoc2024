@@ -1,34 +1,49 @@
 use std::collections::BTreeMap;
 
 fn main() {
-    let mut in_left: Vec<u64> = vec![];
-    let mut in_right: Vec<u64> = vec![];
-    let in_lines = INPUT.lines();
-    for i in in_lines {
-        if let Some(s) = i.split_once("   ") {
-            in_left.push(s.0.parse::<u64>().unwrap());
-            in_right.push(s.1.parse::<u64>().unwrap());
+    let (l, r) = parse();
+    distance(&l, &r);
+    similarity(&l, &r);
+}
+
+fn parse() -> (Vec<u64>, Vec<u64>) {
+    let line_count = INPUT.lines().count();
+    let mut in_left: Vec<u64> = vec![0; line_count];
+    let mut in_right: Vec<u64> = vec![0; line_count];
+    INPUT.split_whitespace().enumerate().for_each(|(idx, i)| {
+        if let Ok(v) = i.parse::<u64>() {
+            if idx % 2 == 0 {
+                in_left[idx / 2] = v;
+            } else {
+                in_right[idx / 2] = v;
+            }
         }
-    }
+    });
     in_left.sort();
     in_right.sort();
-    let mut distance: u64 = 0;
-    for (&a, &b) in in_left.iter().zip(in_right.iter()) {
-        distance += (a).abs_diff(b)
-    }
-    println!("{}", distance);
+    (in_left, in_right)
+}
 
+fn distance(left: &[u64], right: &[u64]) {
+    let mut d: u64 = 0;
+    for (&a, &b) in left.iter().zip(right.iter()) {
+        d += a.abs_diff(b)
+    }
+    println!("{}", d);
+}
+
+fn similarity(left: &[u64], right: &[u64]) {
     let mut freq: BTreeMap<u64, u64> = BTreeMap::new();
-    in_right.iter().for_each(|&i| {
+    right.iter().for_each(|&i| {
         freq.entry(i).and_modify(|v| *v += 1).or_insert(1);
     });
-    let mut similarity: u64 = 0;
-    in_left.iter().for_each(|&v| {
-        if let Some(s) = freq.get(&v) {
-            similarity += v * s;
+    let mut s: u64 = 0;
+    left.iter().for_each(|&v| {
+        if let Some(cnt) = freq.get(&v) {
+            s += v * cnt;
         }
     });
-    println!("{}", similarity);
+    println!("{}", s);
 }
 
 const INPUT: &str = "37033   48086
