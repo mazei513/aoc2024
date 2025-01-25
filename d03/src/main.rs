@@ -3,7 +3,7 @@ use std::fs::read_to_string;
 fn main() {
     let input = read_to_string("input").unwrap();
 
-    println!("{}", parse_adder(input, true))
+    println!("{}", parse_adder(input.as_str(), true))
 }
 
 #[derive(Debug)]
@@ -24,7 +24,7 @@ enum State {
     DNPL,
 }
 
-fn parse_adder(input: String, with_enabled: bool) -> usize {
+fn parse_adder(input: &str, with_enabled: bool) -> usize {
     let mut total: usize = 0;
     let mut parser_state = State::M;
     let mut n1 = String::new();
@@ -128,34 +128,45 @@ fn parse_adder(input: String, with_enabled: bool) -> usize {
 
 #[cfg(test)]
 mod test {
-    use super::*;
+    use super::parse_adder;
 
     #[test]
-    fn test_parse_adder() {
+    fn t1() {
         assert_eq!(
             parse_adder(
-                String::from(
-                    "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"
-                ),
+                "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))",
                 false
             ),
             161
         );
+    }
+    #[test]
+    fn t2() {
         assert_eq!(
             parse_adder(
-                String::from(
-                    "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
-                ),
+                "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))",
                 true
             ),
             48
         );
-        assert_eq!(parse_adder(String::from("mul ( 2 , 4 )"), false), 0);
-        assert_eq!(parse_adder(String::from("mul(4*"), false), 0);
-        assert_eq!(parse_adder(String::from("mul(6,9!"), false), 0);
+    }
+    #[test]
+    fn t3() {
+        assert_eq!(parse_adder("mul ( 2 , 4 )", false), 0);
+    }
+    #[test]
+    fn t4() {
+        assert_eq!(parse_adder("mul(4*", false), 0);
+    }
+    #[test]
+    fn t5() {
+        assert_eq!(parse_adder("mul(6,9!", false), 0);
+    }
+    #[test]
+    fn t6() {
         assert_eq!(
             parse_adder(
-                String::from(";({where()+'what()mul(445,324)#what()select()(+mul(430,603)"),
+                ";({where()+'what()mul(445,324)#what()select()(+mul(430,603)",
                 false
             ),
             (445 * 324) + (430 * 603)
