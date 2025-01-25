@@ -20,18 +20,28 @@ fn xmas_cnt(input: &str) -> usize {
         let r_ok = x_pos < max_r;
         let b_ok = idx < max_b;
 
-        tot += (r_ok && cmp(input, idx, eq, 1)) as usize;
-        tot += (b_ok && cmp(input, idx, eq, line_length)) as usize;
-        tot += (b_ok && r_ok && cmp(input, idx, eq, line_length + 1)) as usize;
-        tot += (b_ok && l_ok && cmp(input, idx, eq, line_length - 1)) as usize;
+        if r_ok {
+            tot += cmp(input, idx, eq, 1);
+        }
+        if b_ok {
+            tot += cmp(input, idx, eq, line_length);
+        }
+        if b_ok && r_ok {
+            tot += cmp(input, idx, eq, line_length + 1);
+        }
+        if b_ok && l_ok {
+            tot += cmp(input, idx, eq, line_length - 1);
+        }
     }
     tot
 }
 
-fn cmp(input: &str, skip: usize, eq: &str, step: usize) -> bool {
+fn cmp(input: &str, skip: usize, eq: &str, step: usize) -> usize {
     let a = eq.as_bytes();
     let b = input.as_bytes();
-    a[0] == b[skip + step] && a[1] == b[skip + step * 2] && a[2] == b[skip + step * 3]
+    ((a[2] == b[skip + step * 3]) as usize)
+        * ((a[1] == b[skip + step * 2]) as usize)
+        * ((a[0] == b[skip + step]) as usize)
 }
 
 #[cfg(test)]
