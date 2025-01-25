@@ -8,7 +8,6 @@ fn main() {
 
 #[derive(Debug)]
 enum State {
-    Start,
     M,
     U,
     L,
@@ -33,36 +32,32 @@ fn parse_adder(input: String, with_enabled: bool) -> usize {
     let mut enabled = true;
     for c in input.chars() {
         match parser_state {
-            State::Start => match c {
-                'm' => parser_state = State::M,
-                'd' => parser_state = State::D,
-                _ => parser_state = State::Start,
-            },
             State::M => match c {
+                'd' => parser_state = State::D,
                 'u' => parser_state = State::U,
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::U => match c {
                 'l' => parser_state = State::L,
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::L => match c {
                 '(' => parser_state = State::PL,
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::PL => match c {
                 '0'..='9' => {
                     n1.push(c);
                     parser_state = State::N1
                 }
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::N1 => match c {
                 '0'..='9' => n1.push(c),
                 ',' => parser_state = State::C,
                 _ => {
                     n1.clear();
-                    parser_state = State::Start
+                    parser_state = State::M
                 }
             },
             State::C => match c {
@@ -72,7 +67,7 @@ fn parse_adder(input: String, with_enabled: bool) -> usize {
                 }
                 _ => {
                     n1.clear();
-                    parser_state = State::Start
+                    parser_state = State::M
                 }
             },
             State::N2 => match c {
@@ -83,48 +78,48 @@ fn parse_adder(input: String, with_enabled: bool) -> usize {
                     }
                     n1.clear();
                     n2.clear();
-                    parser_state = State::Start
+                    parser_state = State::M
                 }
                 _ => {
                     n1.clear();
                     n2.clear();
-                    parser_state = State::Start
+                    parser_state = State::M
                 }
             },
             State::D => match c {
                 'o' => parser_state = State::O,
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::O => match c {
                 '(' => parser_state = State::DPL,
                 'n' => parser_state = State::N,
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::DPL => match c {
                 ')' => {
                     enabled = true;
-                    parser_state = State::Start
+                    parser_state = State::M
                 }
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::N => match c {
                 '\'' => parser_state = State::Qu,
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::Qu => match c {
                 't' => parser_state = State::T,
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::T => match c {
                 '(' => parser_state = State::DNPL,
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
             State::DNPL => match c {
                 ')' => {
                     enabled = false;
-                    parser_state = State::Start
+                    parser_state = State::M
                 }
-                _ => parser_state = State::Start,
+                _ => parser_state = State::M,
             },
         }
     }
