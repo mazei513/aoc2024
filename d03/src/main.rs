@@ -132,15 +132,15 @@ mod test {
 
     #[test]
     fn test_parse_adder() {
-        // assert_eq!(
-        //     parse_adder(
-        //         String::from(
-        //             "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"
-        //         ),
-        //         false
-        //     ),
-        //     161
-        // );
+        assert_eq!(
+            parse_adder(
+                String::from(
+                    "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"
+                ),
+                false
+            ),
+            161
+        );
         assert_eq!(
             parse_adder(
                 String::from(
@@ -150,15 +150,15 @@ mod test {
             ),
             48
         );
-        // assert_eq!(parse_adder(String::from("mul ( 2 , 4 )"), false), 0);
-        // assert_eq!(parse_adder(String::from("mul(4*"), false), 0);
-        // assert_eq!(parse_adder(String::from("mul(6,9!"), false), 0);
-        // assert_eq!(
-        //     parse_adder(
-        //         String::from(";({where()+'what()mul(445,324)#what()select()(+mul(430,603)"),
-        //         false
-        //     ),
-        //     (445 * 324) + (430 * 603)
-        // )
+        assert_eq!(parse_adder(String::from("mul ( 2 , 4 )"), false), 0);
+        assert_eq!(parse_adder(String::from("mul(4*"), false), 0);
+        assert_eq!(parse_adder(String::from("mul(6,9!"), false), 0);
+        assert_eq!(
+            parse_adder(
+                String::from(";({where()+'what()mul(445,324)#what()select()(+mul(430,603)"),
+                false
+            ),
+            (445 * 324) + (430 * 603)
+        )
     }
 }
