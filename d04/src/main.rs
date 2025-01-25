@@ -29,12 +29,9 @@ fn xmas_cnt(input: &str) -> usize {
 }
 
 fn cmp(input: &str, skip: usize, eq: &str, step: usize) -> bool {
-    input
-        .chars()
-        .skip(skip + step)
-        .step_by(step)
-        .take(3)
-        .eq(eq.chars())
+    let a = eq.as_bytes();
+    let b = input.as_bytes();
+    a[0] == b[skip + step] && a[1] == b[skip + step * 2] && a[2] == b[skip + step * 3]
 }
 
 #[cfg(test)]
