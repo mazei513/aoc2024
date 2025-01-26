@@ -61,22 +61,14 @@ fn x_mas_cnt(input: &str) -> usize {
             continue;
         }
         let ibs = input.as_bytes();
-        if (ibs[idx_from_x_y(line_length, x - 1, y - 1)] == b'M'
-            && ibs[idx_from_x_y(line_length, x + 1, y - 1)] == b'M'
-            && ibs[idx_from_x_y(line_length, x - 1, y + 1)] == b'S'
-            && ibs[idx_from_x_y(line_length, x + 1, y + 1)] == b'S')
-            || (ibs[idx_from_x_y(line_length, x - 1, y + 1)] == b'M'
-                && ibs[idx_from_x_y(line_length, x + 1, y + 1)] == b'M'
-                && ibs[idx_from_x_y(line_length, x - 1, y - 1)] == b'S'
-                && ibs[idx_from_x_y(line_length, x + 1, y - 1)] == b'S')
-            || (ibs[idx_from_x_y(line_length, x - 1, y + 1)] == b'M'
-                && ibs[idx_from_x_y(line_length, x - 1, y - 1)] == b'M'
-                && ibs[idx_from_x_y(line_length, x + 1, y + 1)] == b'S'
-                && ibs[idx_from_x_y(line_length, x + 1, y - 1)] == b'S')
-            || (ibs[idx_from_x_y(line_length, x + 1, y + 1)] == b'M'
-                && ibs[idx_from_x_y(line_length, x + 1, y - 1)] == b'M'
-                && ibs[idx_from_x_y(line_length, x - 1, y + 1)] == b'S'
-                && ibs[idx_from_x_y(line_length, x - 1, y - 1)] == b'S')
+        let c_ul = ibs[idx_from_x_y(line_length, x - 1, y - 1)];
+        let c_ur = ibs[idx_from_x_y(line_length, x + 1, y - 1)];
+        let c_dr = ibs[idx_from_x_y(line_length, x + 1, y + 1)];
+        let c_dl = ibs[idx_from_x_y(line_length, x - 1, y + 1)];
+        if (c_ul == b'M' && c_ur == b'M' && c_dl == b'S' && c_dr == b'S')
+            || (c_dl == b'M' && c_dr == b'M' && c_ul == b'S' && c_ur == b'S')
+            || (c_dl == b'M' && c_ul == b'M' && c_dr == b'S' && c_ur == b'S')
+            || (c_dr == b'M' && c_ur == b'M' && c_dl == b'S' && c_ul == b'S')
         {
             tot += 1;
         }
