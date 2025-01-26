@@ -1,4 +1,5 @@
-use std::{cmp::Ordering, collections::HashSet};
+use std::cmp::Ordering;
+use std::collections::HashSet;
 
 fn main() {
     let input = std::fs::read_to_string("input").unwrap();
@@ -12,19 +13,12 @@ fn main() {
             continue;
         }
         if is_parsing_rules {
-            let mut s = l.split('|');
-            let v1: u8 = s.next().unwrap().parse().unwrap();
-            let v2: usize = s.next().unwrap().parse().unwrap();
-            rules[v2].insert(v1);
+            if let Some((v1, v2)) = parse_rule(l) {
+                rules[v2].insert(v1);
+            }
         } else {
-            let ns: Vec<(_, u8)> = l
-                .split(",")
-                .map(|n| n.parse().unwrap())
-                .enumerate()
-                .collect();
-
-            let vs = ns.iter().map(|(_, v)| *v).collect();
-            if is_ok(&rules, &ns) {
+            let vs: Vec<_> = l.split(",").map(|n| n.parse().unwrap()).collect();
+            if vs.is_sorted_by(|a, b| cmp(&rules, a, b)) {
                 correct.push(vs);
             } else {
                 wrong.push(vs);
@@ -40,24 +34,33 @@ fn main() {
 
     let mut res2 = 0;
     for ele in wrong.iter_mut() {
-        ele.sort_unstable_by(|a, b| match rules[*a as usize].contains(b) {
-            true => Ordering::Less,
-            _ => Ordering::Greater,
-        });
+        ele.sort_unstable_by(|a, b| sorter(&rules, a, b));
         res2 += ele[ele.len() / 2] as usize;
     }
     println!("{}", res2);
 }
 
-fn is_ok(rules: &[HashSet<u8>], ns: &[(usize, u8)]) -> bool {
-    for (idx, n) in ns {
-        if ns
-            .iter()
-            .skip(*idx)
-            .any(|(_, v)| rules[*n as usize].contains(v))
-        {
-            return false;
-        };
+fn sorter(rules: &[HashSet<u8>], a: &u8, b: &u8) -> Ordering {
+    match cmp(rules, a, b) {
+        true => Ordering::Less,
+        _ => Ordering::Greater,
     }
-    true
+}
+
+fn cmp(rules: &[HashSet<u8>], a: &u8, b: &u8) -> bool {
+    rules[*b as usize].contains(a)
+}
+
+fn parse_rule(l: &str) -> Option<(u8, usize)> {
+    let mut s = l.split('|');
+    let v1: u8 = parse_rule_num(s.next())?;
+    let v2: usize = parse_rule_num(s.next())?;
+    Some((v1, v2))
+}
+
+fn parse_rule_num<T: std::str::FromStr>(s: Option<&str>) -> Option<T> {
+    match s?.parse::<T>() {
+        Ok(v) => Some(v),
+        _ => None,
+    }
 }
